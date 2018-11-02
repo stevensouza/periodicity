@@ -1,4 +1,4 @@
-package periodicity;
+package com.stevesouza.periodicity;
 
 class StandardJob implements Job {
 
@@ -37,22 +37,6 @@ class StandardJob implements Job {
 
     }
 
-//    public PeriodicityClass getDuration() {
-//        return duration;
-//    }
-//
-//    public PeriodicityClass getSchedule() {
-//        return schedule;
-//    }
-
-//    public void setDuration(PeriodicityClass duration) {
-//        this.duration=duration;
-//        
-//    }
-//
-//    public void setSchedule(PeriodicityClass schedule) {
-//        this.schedule=schedule;
-//    }
 
     public void reschedule() {
         if (!isRunning && prevRunning) {

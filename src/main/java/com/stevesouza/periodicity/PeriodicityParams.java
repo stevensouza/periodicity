@@ -1,4 +1,4 @@
-package periodicity;
+package com.stevesouza.periodicity;
 
 class PeriodicityParams {
     double periodicityStart;// the starting point for periodicity.  If something happens every 2 hours this value would be 2.

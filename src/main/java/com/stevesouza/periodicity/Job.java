@@ -1,4 +1,4 @@
-package periodicity;
+package com.stevesouza.periodicity;
 
 interface Job {
 

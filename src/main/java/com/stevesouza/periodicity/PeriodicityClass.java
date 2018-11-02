@@ -1,22 +1,13 @@
-package periodicity;
+package com.stevesouza.periodicity;
 
 class PeriodicityClass {
-//    private double periodicityStart;// the starting point for periodicity.  If something happens every 2 hours this value would be 2.
-//    private double periodicityEnd;// the ending point for periodicity.  If something happens every 2 hours this value would be 2.
-//    private int periodicityRange;
 
     private PeriodicityParams params;
 
     public PeriodicityClass(PeriodicityParams params) {
         this.params = params;
-        // this.periodicityStart=this.periodicityEnd=periodicityStart;
 
     }
-//    public PeriodicityClass(double periodicityStart, double periodicityEnd, int periodicityRange) {
-//        this.periodicityStart=periodicityStart;
-//        this.periodicityEnd=periodicityEnd;
-//        this.periodicityRange=periodicityRange;
-//    }
 
 
     public double getPeriodicity(int currentHour) {
