@@ -279,10 +279,10 @@ public class JobVisualizer extends JPanel {
          * to paint what appears in the screen.
          */
 
-        for (int i = 0; i < 5; i++) {
+       // for (int i = 0; i < 1; i++) {
             JFrame f = displayWindow(args);
-        }
-        
+        //}
+
     }
 
 
