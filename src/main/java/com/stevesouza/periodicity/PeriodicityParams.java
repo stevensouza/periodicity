@@ -27,7 +27,6 @@ class PeriodicityParams {
 
     // 4,24,480 (typically the last value is some range such as in this case 24*20 (20 days))
     private static PeriodicityParams init(String[] paramsArr) {
-
         double start = Double.parseDouble(paramsArr[0].trim());
         double end = Double.parseDouble(paramsArr[1].trim());
         int range = Integer.parseInt(paramsArr[2].trim());

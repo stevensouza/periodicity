@@ -19,11 +19,7 @@ class StandardJob implements Job {
 
     public boolean isRunning() {
         prevRunning = isRunning;
-        if (currentHour >= nextStartHour && currentHour < nextEndHour)
-            isRunning = true;
-        else
-            isRunning = false;
-
+        isRunning = currentHour >= nextStartHour && currentHour < nextEndHour;
         return isRunning;
     }
 
@@ -42,10 +38,7 @@ class StandardJob implements Job {
         if (!isRunning && prevRunning) {
             nextStartHour += schedule.getPeriodicity(currentHour);
             nextEndHour = nextStartHour + getDurationValue();
-            //     System.out.println("next="+nextStartHour+", end="+nextEndHour+", current="+currentHour);
-
         }
-
     }
 
 

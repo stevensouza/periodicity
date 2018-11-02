@@ -6,9 +6,7 @@ class PeriodicityClass {
 
     public PeriodicityClass(PeriodicityParams params) {
         this.params = params;
-
     }
-
 
     public double getPeriodicity(int currentHour) {
         double periodicity = params.periodicityStart;

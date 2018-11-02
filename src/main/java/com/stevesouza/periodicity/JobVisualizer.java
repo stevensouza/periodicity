@@ -44,10 +44,12 @@ public class JobVisualizer extends JPanel {
     private int scale = 2;
     private CompositeJob compositeJob = new CompositeJob();
 
+    // variables that track where the window will open.  The nubmers are incremented after
+    // each windows is opened so they don't overlay each other.
     private static int x = 10;
     private static int y = 10;
-    private static int X_INCREMENT=10;
-    private static int Y_INCREMENT=20;
+    private static int X_INCREMENT = 10;
+    private static int Y_INCREMENT = 20;
 
 
     public JobVisualizer() {
@@ -94,39 +96,31 @@ public class JobVisualizer extends JPanel {
 
 
     public void paintOnce(Graphics g1) {
-
         Graphics2D g = (Graphics2D) g1;
         BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 
         dispOneYear(image);
         g.scale(scale, scale);
         g.drawImage(image, 0, 0, null);
-
     }
 
 
     public void dispOneYear(BufferedImage image) {
-
-
         int x, y; // x=cols, y=rows
         // loop thru hours in the year
-        boolean isRunning;
 
         for (currentHour = 0; currentHour < hoursInYear; currentHour++) {
             x = getDay();
             y = getHourOfDay();
 
             compositeJob.setCurrentHour(currentHour);
-            isRunning = compositeJob.isRunning();
 
-            if (isRunning)
+            if (compositeJob.isRunning())
                 image.setRGB(x, y, runColor);
             else
                 image.setRGB(x, y, noRunColor);
 
             compositeJob.reschedule();
-
-
         }
     }
 
@@ -144,13 +138,13 @@ public class JobVisualizer extends JPanel {
     }
 
     private int getHourOfDay() {
-//      int hourOfDay=currentHour%HOURS_IN_DAY;
         int hourOfDay = currentHour % numRows;
         return hourOfDay;
     }
 
-    private  static JFrame displayWindow(String[] args) {
+    private static JFrame displayWindow(String[] args) {
         JFrame f = new JFrame();
+        f.setTitle(argsToList(args).toString());
         f.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 System.exit(0);
@@ -159,18 +153,16 @@ public class JobVisualizer extends JPanel {
 
         f.setContentPane(buildJobVisualizer(argsToList(args)));
         f.setSize(WIDTH, HEIGHT);
-        Rectangle r = new Rectangle(x,y,WIDTH, HEIGHT);
-        x+=X_INCREMENT;
-        y+=Y_INCREMENT;
+        Rectangle r = new Rectangle(x, y, WIDTH, HEIGHT);
+        x += X_INCREMENT;
+        y += Y_INCREMENT;
         f.setBounds(r);
         f.setVisible(true);
 
         return f;
     }
 
-    private static JobVisualizer buildJobVisualizer(List paramsList) {
-
-        Iterator iter = paramsList.iterator();
+    private static JobVisualizer buildJobVisualizer(List<CommandLineArg> paramsList) {
 
         JobVisualizer jobViz = new JobVisualizer();
         boolean reverseColor = false;
@@ -178,8 +170,7 @@ public class JobVisualizer extends JPanel {
         Duration duration = null;
         Job job;
 
-        while (iter.hasNext()) {
-            CommandLineArg entry = (CommandLineArg) iter.next();
+        for (CommandLineArg entry : paramsList) {
             String key = entry.getKey();
             String value = entry.getValue();
 
@@ -209,8 +200,6 @@ public class JobVisualizer extends JPanel {
                 schedule = null;
                 duration = null;
             }
-
-
         }
 
         if (reverseColor)
@@ -221,15 +210,12 @@ public class JobVisualizer extends JPanel {
 
     }
 
-    private static List argsToList(String[] a) {
-        List list = new ArrayList();
+    private static List<CommandLineArg> argsToList(String[] a) {
+        List<CommandLineArg> list = new ArrayList<>();
         for (int i = 0; i < a.length; i++) {
             list.add(new CommandLineArg(name(a[i]), value(a[i])));
         }
-
         return list;
-
-
     }
 
     private static String name(String param) {
@@ -243,7 +229,6 @@ public class JobVisualizer extends JPanel {
         String value = (arr[1] == null) ? "" : arr[1].trim();
 
         return value;
-
     }
 
 
@@ -255,7 +240,7 @@ public class JobVisualizer extends JPanel {
         System.out.println("Sample calls follow:");
         System.out.println(" java -cp periodcity.jar com.stevesouza.periodicity.JobVisualizer schedule=1,4,240 duration=1");
         System.out.println(" java -cp periodcity.jar com.stevesouza.periodicity.JobVisualizer schedule=7 duration=1 schedule=5 duration=2,4,480");
-        System.out.println(" java -cp periodcity.jar com.stevesouza.periodicity.JobVisualizer schedule=13 duration=1 (Default)");
+        System.out.println(" java -cp periodcity.jar com.stevesouza.JobVisualizer schedule=13 duration=1 (Default)");
         System.out.println();
         System.out.println("schedule represents the periodicity in hours for when a job runs.  The above indicates the job will start running every 1 hour,");
         System.out.println("the over a 240 hour period linearly move to every 4 hours. When schedule is one number it will run the job every nth hour");
@@ -270,7 +255,6 @@ public class JobVisualizer extends JPanel {
     }
 
     public static void main(String[] args) {
-
 
         if (args == null || args.length == 0) {
             args = new String[]{"schedule=13", "duration=1"};
@@ -295,11 +279,10 @@ public class JobVisualizer extends JPanel {
          * to paint what appears in the screen.
          */
 
-        for (int i=0; i<5; i++){
+        for (int i = 0; i < 5; i++) {
             JFrame f = displayWindow(args);
         }
-
-
+        
     }
 
 
