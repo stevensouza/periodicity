@@ -23,9 +23,38 @@ class CompositeJob implements Job {
      *
      * @return
      */
+
     public boolean isRunning() {
-        return jobsList.stream().anyMatch(job -> job.isRunning());
+        Iterator<Job> iter = jobsList.iterator();
+        boolean isRunning = false;
+        while (iter.hasNext()) {
+            Job job = iter.next();
+            if (job.isRunning())
+                isRunning = true;
+        }
+
+        return isRunning;
     }
+
+    // also fails
+
+//    public boolean isRunning() {
+//        Iterator<Job> iter=jobsList.iterator();
+//        while (iter.hasNext()) {
+//            Job job = iter.next();
+//            if (job.isRunning())
+//               return true;
+//        }
+//
+//        return false;
+//    }
+
+    // not sure why this isn't working, but it isn't.  It should be able to replace the above.
+//    public boolean isRunning() {
+//        return jobsList.stream().anyMatch(job -> job.isRunning());
+//    }
+
+
 
     /**
      * Reschedule when each job is supposed to run again
@@ -35,8 +64,39 @@ class CompositeJob implements Job {
     }
 
     public void setCurrentHour(int currentHour) {
-        jobsList.forEach(job->job.setCurrentHour(currentHour));
+        jobsList.forEach(job -> job.setCurrentHour(currentHour));
     }
+
+
+
+
+//    public void reschedule() {
+//        Iterator iter=jobsList.iterator();
+//        while (iter.hasNext()) {
+//            Job job=(Job) iter.next();
+//            job.reschedule();
+//        }
+//
+//    }
+
+//    public void setCurrentHour(int currentHour) {
+//        Iterator iter=jobsList.iterator();
+//        while (iter.hasNext()) {
+//            Job job=(Job) iter.next();
+//            job.setCurrentHour(currentHour);
+//        }
+//
+//    }
+
+//    public static void main(String[] args) {
+//        List<Boolean> list = new ArrayList<>();
+//        list.add(false);
+//        list.add(false);
+//        list.add(false);
+//
+//        System.out.println(list.stream().anyMatch(b->b==true));
+//    }
+
 
 
 }

@@ -1,11 +1,16 @@
 package com.stevesouza.periodicity;
 
+import org.springframework.shell.standard.ShellComponent;
+import org.springframework.shell.standard.ShellMethod;
+import org.springframework.shell.standard.ShellOption;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
-public class MainProgram {
+@ShellComponent
+public class PeriodicityShell {
+
+    // @Value("${file-name}")
 
     // variables that track where the window will open.  The nubmers are incremented after
     // each windows is opened so they don't overlay each other.
@@ -14,16 +19,26 @@ public class MainProgram {
     private static int X_INCREMENT = 10;
     private static int Y_INCREMENT = 20;
 
-    private static JFrame displayWindow(String[] args) {
+    private String[] toArray(String arg) {
+        String cleaned = arg.replace(" ", "");
+        // split on number,alpha. example: s=1,d=2,4,55 would split on
+        //   s=1
+        //   d=2,4,55
+        return cleaned.split(";");
+    }
+
+
+    @ShellMethod(key = {"r", "run"}, value = "Run the periodicity program.")
+    public void displayWindow(
+            @ShellOption(
+                    value = {"-a", "-args", "--a", "--args"},
+                    help = "Example: schedule=7,11,duration=1,2",
+                    defaultValue = "schedule=7;duration=1")
+                    String argString) {
+        String[] args = toArray(argString);
         JFrame f = new JFrame();
         JobVisualizer jobVisualizer = JobVisualizer.buildJobVisualizer(args);
         f.setTitle(jobVisualizer.getCommandLineArgs().toString());
-        f.addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent e) {
-                System.exit(0);
-            }
-        });
-
         f.setContentPane(jobVisualizer);
         f.setSize(jobVisualizer.getWidth(), jobVisualizer.getHeight());
         Rectangle r = new Rectangle(x, y, jobVisualizer.getWidth(), jobVisualizer.getHeight());
@@ -32,10 +47,10 @@ public class MainProgram {
         f.setBounds(r);
         f.setVisible(true);
 
-        return f;
     }
 
-    private void help() {
+    @ShellMethod(key = {"h"}, value = "Further help on how ot run program.")
+    public void help() {
         System.out.println("Property of LiquiLight Software LLC:");
         System.out.println("This program will performs modulo logic to see what regualarly scheduled jobs may look like.");
         System.out.println("Rows are the 24 hours of the day and columns are the 365 days of the year.");
@@ -57,36 +72,15 @@ public class MainProgram {
 
     }
 
-    public static void main(String[] args) {
-        MainProgram program = new MainProgram();
-
-        if (args == null || args.length == 0) {
-            args = new String[]{"schedule=13", "duration=1"};
-            program.help();
-        }
-
-        /**
-         * This is a Swing program.  JobVisualizer inherits from and is a JPanel/canvas that is written too within a JFrame/Window.
-         * JobVisualizer's paint method is called to render the screen.
-         *
-         * info on JFrame:
-         *
-         * With these few instructions we will obtain a window which can be maximize, minimize, change it´s size with the mouse,
-         * etc. When we create a JFrame object we start an engine which manages the user interface. This engine communicates
-         * with the operative system both to paint in the screen as to receive information from the keyboard and from the mouse.
-         * We will call this engine "AWT Engine" or "Swing Engine"
-         *
-         * JPanel: The canvas
-         *
-         * To be able to paint we want to know WHERE and where is an JPanel object which will be included in the window.
-         * We extend the JPanel class to be able to overwrite the paint method which is the method called by the AWT Engine
-         * to paint what appears in the screen.
-         */
-
-        // for (int i = 0; i < 1; i++) {
-        JFrame f = program.displayWindow(args);
-        //}
-
+    @ShellMethod(key = {"close","c"}, value = "Close windows and exit the application")
+    public void closeApp() {
+        System.exit(0);
     }
+
+        //        f.addWindowListener(new WindowAdapter() {
+//            public void windowClosing(WindowEvent e) {
+//                System.exit(0);
+//            }
+//        });
 
 }

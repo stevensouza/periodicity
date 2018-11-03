@@ -12,11 +12,8 @@ package com.stevesouza.periodicity;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -131,10 +128,10 @@ public class JobVisualizer extends JPanel {
             String key = entry.getKey();
             String value = entry.getValue();
 
-            if ("schedule".equalsIgnoreCase(key))
-                schedule = new Schedule(PeriodicityParams.init(value));
-            else if ("duration".equalsIgnoreCase(key))
-                duration = new Duration(PeriodicityParams.init(value));
+            if ("schedule".equalsIgnoreCase(key) || "s".equalsIgnoreCase(key))
+                schedule = new Schedule(PeriodicityParams.create(value));
+            else if ("duration".equalsIgnoreCase(key) || "d".equalsIgnoreCase(key))
+                duration = new Duration(PeriodicityParams.create(value));
             else if ("runcolor".equalsIgnoreCase(key))
                 jobViz.runColor = Integer.parseInt(value);
             else if ("noruncolor".equalsIgnoreCase(key))
@@ -148,6 +145,8 @@ public class JobVisualizer extends JPanel {
             }
 
             jobViz.hoursInYear = jobViz.DAYS_IN_YEAR * jobViz.numRows;
+            System.out.println(key+" "+value);
+
 
             if (schedule != null && duration != null) {
                 job = new StandardJob(schedule, duration);
@@ -167,13 +166,13 @@ public class JobVisualizer extends JPanel {
 
     }
 
-    private  void setCommandLineArgs(String[] a) {
+    private void setCommandLineArgs(String[] a) {
         for (int i = 0; i < a.length; i++) {
             commandLineArgs.add(new CommandLineArg(name(a[i]), value(a[i])));
         }
     }
 
-    public  List<CommandLineArg> getCommandLineArgs() {
+    public List<CommandLineArg> getCommandLineArgs() {
         return commandLineArgs;
     }
 
