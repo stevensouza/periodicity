@@ -145,8 +145,6 @@ public class JobVisualizer extends JPanel {
             }
 
             jobViz.hoursInYear = jobViz.DAYS_IN_YEAR * jobViz.numRows;
-            System.out.println(key+" "+value);
-
 
             if (schedule != null && duration != null) {
                 job = new StandardJob(schedule, duration);
