@@ -20,10 +20,10 @@ public class PeriodicityShell {
 
     // variables that track where the window will open.  The nubmers are incremented after
     // each windows is opened so they don't overlay each other.
-    private static int x = 10;
-    private static int y = 10;
-    private static int X_INCREMENT = 10;
-    private static int Y_INCREMENT = 20;
+    private int x = 10;
+    private int y = 10;
+    private static final int X_INCREMENT = 10;
+    private static final int Y_INCREMENT = 20;
 
     private Map<String, JobVisualizerHolder> visualizers = new HashMap<>();
     private int jobVisualizerCounter;
@@ -36,8 +36,7 @@ public class PeriodicityShell {
         return cleaned.split(";");
     }
 
-
-    @ShellMethod(key = {"r", "run"}, value = "Run the periodicity program.")
+    @ShellMethod(key = {"r", "run"}, value = "Run the periodicity program and open a visualization based on the inputs.")
     public void displayWindow(
             @ShellOption(
                     value = {"-a", "-args", "--a", "--args"},
@@ -65,27 +64,29 @@ public class PeriodicityShell {
 
     @ShellMethod(key = {"h"}, value = "Further help on how ot run program.")
     public void help() {
-        System.out.println("Property of LiquiLight Software LLC:");
-        System.out.println("This program will performs modulo logic to see what regualarly scheduled jobs may look like.");
+        System.out.println("This program  performs modulo logic to see what regularly scheduled jobs may look like.");
         System.out.println("Rows are the 24 hours of the day and columns are the 365 days of the year.");
         System.out.println();
         System.out.println("Sample calls follow:");
-        System.out.println(" java -cp periodcity.jar com.stevesouza.periodicity.MainProgram schedule=1,4,240 duration=1");
-        System.out.println(" java -cp periodcity.jar com.stevesouza.periodicity.MainProgram schedule=7 duration=1 schedule=5 duration=2,4,480");
-        System.out.println(" java -cp periodcity.jar com.stevesouza.MainProgram schedule=13 duration=1 (Default)");
+        System.out.println(" r \"schedule=1,4,240;duration=1\"");
+        System.out.println(" r \"schedule=7;duration=1;schedule=5;duration=2,4,480\"");
+        System.out.println(" r \"schedule=13;duration=1\"");
         System.out.println();
-        System.out.println("schedule represents the periodicity in hours for when a job runs.  The above indicates the job will start running every 1 hour,");
-        System.out.println("the over a 240 hour period linearly move to every 4 hours. When schedule is one number it will run the job every nth hour");
-        System.out.println("In the second case above it would run every 7th hour.  Duration represents how long the scheduled job will run in hours and works similarly");
-        System.out.println("to schedule.  The first 2 values in schedule and duration can be floats and the third value has to be an integer.");
+        System.out.println("Schedule represents the periodicity in hours for when a job runs. ");
+        System.out.println();
+        System.out.println("Example: '1,4,240' indicates the job will start running every 1 hour,");
+        System.out.println("  and over a 240 hour period linearly move to every 4 hours. When schedule is one number it will run the job every nth hour");
+        System.out.println();
+        System.out.println("Example:  In the second case above the job would run every 7th hour.  Duration represents how long the scheduled job will run in hours and works similarly");
+        System.out.println("to schedule.");
+        System.out.println();
+        System.out.println("Schedule and Duration: The first 2 values in schedule and duration can be floats and the third value has to be an integer.");
         System.out.println("Any number of schedules may be added.  They must be paired (i.e. every schedule must have a specified duration). ");
         System.out.println("Other variables that can be used are runcolor=rgbvalue (ex. runcolor=9999999), noruncolor=rgbvalue.  rgbcolor defaults to blue, ");
         System.out.println("and noruncolor defaults to black. reversecolor=yes/true/1 indicates to reverse the colors.");
         System.out.println("scale=integer (ex. scale=2 is the default) indicates how large to make the pixels.  ");
         System.out.println("numRows=integer (ex. numRows=24 is the default) indicates the number of rows and so will effect the way the periodicity looks. ");
-
     }
-
 
     @ShellMethod(key = {"shutdown","s"}, value = "Close windows and exit the application")
     public void shutDownApp() {
@@ -106,16 +107,14 @@ public class PeriodicityShell {
             value = {"-id","-i", "--id", "--i"},
             help = "id of window as returned by 'list'")
             String id) {
-        JobVisualizerHolder holder = visualizers.get(id);
-        displayWindow(holder.getJobVisualizer().getArgString());
+        displayWindow(visualizers.get(id).getJobVisualizer().getArgString());
     }
 
     @ShellMethod(key = {"combine","c"}, value = "Combine any numbers of images based on their id as returned from 'list': combine 1,5,7")
     public void combine(@ShellOption(
             value = {"-ids","-i", "--ids", "--i"},
             help = "id or id's of windows as returned by 'list'")
-                             String ids) {
-
+            String ids) {
         List<String> args = Arrays.asList(ids.replaceAll(" ", "").split(","));
 
         // get list that only contains keys that are passed in
@@ -138,15 +137,33 @@ public class PeriodicityShell {
 
     }
 
-    @ShellMethod(key = {"reset"}, value = "Close all open windows")
-    public void reset() {
-        visualizers.values().forEach(h->h.getJFrame().dispatchEvent(new WindowEvent(h.getJFrame(), WindowEvent.WINDOW_CLOSING)));
+    @ShellMethod(key = {"reset", "closall", "ca"}, value = "Close all open windows")
+    public void closeAll() {
+        visualizers.values()
+                .forEach(h->h.getJFrame().dispatchEvent(new WindowEvent(h.getJFrame(), WindowEvent.WINDOW_CLOSING)));
         visualizers.clear();
+        x = y = 10;
+        jobVisualizerCounter = 0;
+    }
+
+
+    @ShellMethod(key = {"resetscreen","rs"}, value = "Reset x and y screen position for opening windows")
+    public void resetScreen(@ShellOption(
+              value = {"-x", "--x"},
+              help = "reset x position on the screen",
+              defaultValue = "10") int x,
+            @ShellOption(
+               value = {"-y", "--y"},
+               help = "reset y position on the screen",
+               defaultValue = "10") int y
+                            ) {
+        this.x = x;
+        this.y = y;
     }
 
     @Data
     @AllArgsConstructor
-   private static class JobVisualizerHolder {
+    private static class JobVisualizerHolder {
         private JobVisualizer jobVisualizer;
         private JFrame jFrame;
     }

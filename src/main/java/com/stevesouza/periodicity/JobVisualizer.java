@@ -63,7 +63,8 @@ public class JobVisualizer extends JPanel {
     }
 
     public int getHeight() {
-        return HEIGHT;
+        // extra space is due to fact that window size has to include clickable area.
+        return numRows+65;
     }
 
     /**
@@ -76,7 +77,7 @@ public class JobVisualizer extends JPanel {
 
     public void paintOnce(Graphics g1) {
         Graphics2D g = (Graphics2D) g1;
-        BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+        BufferedImage image = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
 
         dispOneYear(image);
         g.scale(scale, scale);
