@@ -62,7 +62,7 @@ public class PeriodicityShell {
 
 
 
-    @ShellMethod(key = {"h"}, value = "Further help on how ot run program.")
+    @ShellMethod(key = {"fh"}, value = "Further help on how ot run program.")
     public void help() {
         System.out.println("This program  performs modulo logic to see what regularly scheduled jobs may look like.");
         System.out.println("Rows are the 24 hours of the day and columns are the 365 days of the year.");
@@ -86,6 +86,12 @@ public class PeriodicityShell {
         System.out.println("and noruncolor defaults to black. reversecolor=yes/true/1 indicates to reverse the colors.");
         System.out.println("scale=integer (ex. scale=2 is the default) indicates how large to make the pixels.  ");
         System.out.println("numRows=integer (ex. numRows=24 is the default) indicates the number of rows and so will effect the way the periodicity looks. ");
+        System.out.println();
+        System.out.println("Note running the program opens a spring shell that allows you to execute commands.  Run the program and simply type 'help' to get more info.");
+        System.out.println("'help <command>' gives further info about each command.");
+        System.out.println();
+        System.out.println("Note you can bundle commands into scripts and run all commands by using the 'script filename.ext' command.");
+        System.out.println("The project's root directory comes with a few *.txt files with various commands");
     }
 
     @ShellMethod(key = {"shutdown","s"}, value = "Close windows and exit the application")
