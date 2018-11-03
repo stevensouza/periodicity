@@ -17,6 +17,7 @@ class StandardJob implements Job {
         nextEndHour = nextStartHour + getDurationValue();
     }
 
+    /** Note this changes values and so is not stateless - which should be fixed */
     public boolean isRunning() {
         prevRunning = isRunning;
         isRunning = currentHour >= nextStartHour && currentHour < nextEndHour;

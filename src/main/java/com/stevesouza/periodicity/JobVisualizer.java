@@ -35,6 +35,9 @@ public class JobVisualizer extends JPanel {
     private int hoursInYear = DAYS_IN_YEAR * numRows;
     private int runColor = BLUE;
     private int noRunColor = Color.black.getRGB();
+
+
+    private String argString="";
     private List<CommandLineArg> commandLineArgs = new ArrayList<>();
 
 
@@ -114,6 +117,15 @@ public class JobVisualizer extends JPanel {
 
     private int getHourOfDay() {
         return currentHour % numRows;
+    }
+
+
+    public String getArgString() {
+        return argString;
+    }
+
+    public void setArgString(String argString) {
+        this.argString = argString;
     }
 
 

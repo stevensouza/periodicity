@@ -21,6 +21,11 @@ class CompositeJob implements Job {
     /**
      * if any of the contained jobs are running return true
      *
+     * Note the design of the jobs isRunning method needs some work.  It changes the values/state of the Job object when called and
+     * should be stateless.  That is why the loop below doesn't short circuit. If it did then the jobs wouldn't change their state
+     * properly and so would show incorrect results. Maybe an explicit iterator or changeState method would be more explicit (see
+     * StandardJob.isRunning())
+     *
      * @return
      */
 

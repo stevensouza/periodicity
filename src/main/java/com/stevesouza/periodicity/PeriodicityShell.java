@@ -1,11 +1,17 @@
 package com.stevesouza.periodicity;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
 
 import javax.swing.*;
-import java.awt.*;
+import java.awt.Rectangle;
+import java.awt.event.WindowEvent;
+import java.util.*;
+import java.util.stream.Collectors;
+
 
 @ShellComponent
 public class PeriodicityShell {
@@ -18,6 +24,9 @@ public class PeriodicityShell {
     private static int y = 10;
     private static int X_INCREMENT = 10;
     private static int Y_INCREMENT = 20;
+
+    private Map<String, JobVisualizerHolder> visualizers = new HashMap<>();
+    private int jobVisualizerCounter;
 
     private String[] toArray(String arg) {
         String cleaned = arg.replace(" ", "");
@@ -38,7 +47,11 @@ public class PeriodicityShell {
         String[] args = toArray(argString);
         JFrame f = new JFrame();
         JobVisualizer jobVisualizer = JobVisualizer.buildJobVisualizer(args);
-        f.setTitle(jobVisualizer.getCommandLineArgs().toString());
+        jobVisualizer.setArgString(argString);
+        jobVisualizerCounter++;
+
+        visualizers.put(String.valueOf(jobVisualizerCounter), new JobVisualizerHolder(jobVisualizer, f));
+        f.setTitle(jobVisualizer.getArgString());
         f.setContentPane(jobVisualizer);
         f.setSize(jobVisualizer.getWidth(), jobVisualizer.getHeight());
         Rectangle r = new Rectangle(x, y, jobVisualizer.getWidth(), jobVisualizer.getHeight());
@@ -46,8 +59,9 @@ public class PeriodicityShell {
         y += Y_INCREMENT;
         f.setBounds(r);
         f.setVisible(true);
-
     }
+
+
 
     @ShellMethod(key = {"h"}, value = "Further help on how ot run program.")
     public void help() {
@@ -72,15 +86,69 @@ public class PeriodicityShell {
 
     }
 
-    @ShellMethod(key = {"close","c"}, value = "Close windows and exit the application")
-    public void closeApp() {
+
+    @ShellMethod(key = {"shutdown","s"}, value = "Close windows and exit the application")
+    public void shutDownApp() {
         System.exit(0);
     }
 
-        //        f.addWindowListener(new WindowAdapter() {
-//            public void windowClosing(WindowEvent e) {
-//                System.exit(0);
-//            }
-//        });
+    @ShellMethod(key = {"list","l"}, value = "List the windows created this session")
+    public List<String> list() {
+        // change str, str to str;str
+        // return entries of the format: 1 - [schedule=7;duration=1]
+        return  visualizers.entrySet().stream()
+                .map(entry->{return entry.getKey()+" - "+entry.getValue().getJobVisualizer().getArgString();})
+                .collect(Collectors.toList());
+    }
+
+    @ShellMethod(key = {"open","o"}, value = "Open a previously run window based on its id")
+    public void open(@ShellOption(
+            value = {"-id","-i", "--id", "--i"},
+            help = "id of window as returned by 'list'")
+            String id) {
+        JobVisualizerHolder holder = visualizers.get(id);
+        displayWindow(holder.getJobVisualizer().getArgString());
+    }
+
+    @ShellMethod(key = {"combine","c"}, value = "Combine any numbers of images based on their id as returned from 'list': combine 1,5,7")
+    public void combine(@ShellOption(
+            value = {"-ids","-i", "--ids", "--i"},
+            help = "id or id's of windows as returned by 'list'")
+                             String ids) {
+
+        List<String> args = Arrays.asList(ids.replaceAll(" ", "").split(","));
+
+        // get list that only contains keys that are passed in
+        List<JobVisualizerHolder> holder = visualizers
+                .entrySet()
+                .stream()
+                .filter(e->(args.contains(e.getKey())))
+                .map(e-> {return e.getValue();})
+                .collect(Collectors.toList());
+
+        // combine the arguments passed to each JobVisualizer instance to create a string that effectively combines the image
+        //  (simulates the user typing in all strings for 1 image)
+        String combineString = holder
+                .stream()
+                .map(jobVisualizerHolder ->
+                    {return jobVisualizerHolder.getJobVisualizer().getArgString();})
+                .collect(Collectors.joining(";"));
+
+        displayWindow(combineString);
+
+    }
+
+    @ShellMethod(key = {"reset"}, value = "Close all open windows")
+    public void reset() {
+        visualizers.values().forEach(h->h.getJFrame().dispatchEvent(new WindowEvent(h.getJFrame(), WindowEvent.WINDOW_CLOSING)));
+        visualizers.clear();
+    }
+
+    @Data
+    @AllArgsConstructor
+   private static class JobVisualizerHolder {
+        private JobVisualizer jobVisualizer;
+        private JFrame jFrame;
+    }
 
 }
