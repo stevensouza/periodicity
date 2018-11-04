@@ -104,7 +104,7 @@ public class PeriodicityShell {
         // change str, str to str;str
         // return entries of the format: 1 - [schedule=7;duration=1]
         return  visualizers.entrySet().stream()
-                .map(entry->{return String.format("%03d", Integer.valueOf(entry.getKey()))+" - "+entry.getValue().getJobVisualizer().getArgString();})
+                .map(entry->{return String.format("%1$3s", entry.getKey())+" - "+entry.getValue().getJobVisualizer().getArgString();})
                 .sorted()
                 .collect(Collectors.toList());
     }
