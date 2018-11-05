@@ -2,7 +2,9 @@
 
 To run: 
 java -jar target/periodicity-0.0.1-SNAPSHOT.jar
+   
    or
+
 mvn spring-boot:run   
 
 This will pull up a command shell and from here you can execute commands.
