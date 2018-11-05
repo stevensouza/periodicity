@@ -1,6 +1,9 @@
 # App that let's you play with periodicity by default where each pixel is 1 hour of the day and 365 days are displayed (24*365)
 
-To run: java -jar target/periodicity-0.0.1-SNAPSHOT.jar
+To run: 
+java -jar target/periodicity-0.0.1-SNAPSHOT.jar
+   or
+mvn spring-boot:run   
 
 This will pull up a command shell and from here you can execute commands.
 
