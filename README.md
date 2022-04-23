@@ -18,4 +18,17 @@ Other 'run' commands generated the following images.
 ![Example2](https://github.com/stevensouza/periodicity/blob/master/periodicity1.png)
 ![Example3](https://github.com/stevensouza/periodicity/blob/master/24hourmod_calendar_neighbors1.png)
 
+It also comes with another class called Paints. Paints is a standalone class that displays 
+surprisingly complex images by altering the arguments.  For example:
+
+java -classpath .  com.stevesouza.surpriseimages.Paints 0
+![Example4](https://github.com/stevensouza/periodicity/blob/master/0.png)
+
+java -classpath .  com.stevesouza.surpriseimages.Paints 1
+![Example5](https://github.com/stevensouza/periodicity/blob/master/1.png)
+
+You can also simply run the folloiwng and it will show some other possibilities
+
+java -classpath .  com.stevesouza.surpriseimages.Paints 
+
 
