@@ -98,6 +98,7 @@ public class PaintsGenerator {
     }
 
     public static void main(String[] args) throws Exception {
+        new File("visualizations/paints").mkdirs();
         int index = 1;
 
         // === Algorithm 0: Tangent-based ===
@@ -137,7 +138,7 @@ public class PaintsGenerator {
     }
 
     static void save(BufferedImage img, String filename) throws Exception {
-        ImageIO.write(img, "PNG", new File(filename));
-        System.out.println("  Saved: " + filename);
+        ImageIO.write(img, "PNG", new File("visualizations/paints/" + filename));
+        System.out.println("  Saved: visualizations/paints/" + filename);
     }
 }

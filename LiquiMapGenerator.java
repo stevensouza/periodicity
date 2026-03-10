@@ -18,6 +18,15 @@ public class LiquiMapGenerator {
 
     // --- Core classes inlined ---
 
+    static class ColorLegendEntry {
+        Color color;
+        String label;
+        ColorLegendEntry(Color color, String label) {
+            this.color = color;
+            this.label = label;
+        }
+    }
+
     static class PeriodicityParams {
         double start, end;
         int range;
@@ -85,6 +94,10 @@ public class LiquiMapGenerator {
     }
 
     static BufferedImage generate(List<StandardJob> jobs, int numRows, int runColor, int noRunColor, String label) {
+        return generate(jobs, numRows, runColor, noRunColor, label, null);
+    }
+
+    static BufferedImage generate(List<StandardJob> jobs, int numRows, int runColor, int noRunColor, String label, List<ColorLegendEntry> legend) {
         int hoursInYear = DAYS_IN_YEAR * numRows;
         int numCols = DAYS_IN_YEAR;
 
@@ -103,11 +116,17 @@ public class LiquiMapGenerator {
             image.setRGB(x, y, anyRunning ? runColor : noRunColor);
         }
 
-        return addLabelAndScale(image, numCols, numRows, label);
+        return addLabelAndScale(image, numCols, numRows, label, legend);
     }
 
     static BufferedImage generateMultiColor(List<StandardJob> jobs, int numRows,
             int[] jobColors, int overlapColor, int allOverlapColor, int noRunColor, String label) {
+        return generateMultiColor(jobs, numRows, jobColors, overlapColor, allOverlapColor, noRunColor, label, null);
+    }
+
+    static BufferedImage generateMultiColor(List<StandardJob> jobs, int numRows,
+            int[] jobColors, int overlapColor, int allOverlapColor, int noRunColor, String label,
+            List<ColorLegendEntry> legend) {
         int hoursInYear = DAYS_IN_YEAR * numRows;
         int numCols = DAYS_IN_YEAR;
 
@@ -142,23 +161,51 @@ public class LiquiMapGenerator {
             image.setRGB(x, y, pixelColor);
         }
 
-        return addLabelAndScale(image, numCols, numRows, label);
+        return addLabelAndScale(image, numCols, numRows, label, legend);
     }
 
     private static BufferedImage addLabelAndScale(BufferedImage image, int numCols, int numRows, String label) {
+        return addLabelAndScale(image, numCols, numRows, label, null);
+    }
+
+    private static BufferedImage addLabelAndScale(BufferedImage image, int numCols, int numRows, String label, List<ColorLegendEntry> legend) {
         int scaledW = numCols * SCALE;
         int scaledH = numRows * SCALE;
 
-        int labelHeight = 30;
+        boolean hasLegend = legend != null && !legend.isEmpty();
+        int labelHeight = hasLegend ? 48 : 30;
         BufferedImage scaled = new BufferedImage(scaledW, scaledH + labelHeight, BufferedImage.TYPE_INT_RGB);
         Graphics2D g = scaled.createGraphics();
         g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+        g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
         g.drawImage(image, 0, labelHeight, scaledW, scaledH + labelHeight, 0, 0, numCols, numRows, null);
 
         g.setColor(Color.WHITE);
         g.setFont(new Font("Monospaced", Font.BOLD, 14));
         g.drawString(label, 10, 18);
+
+        if (hasLegend) {
+            int legendY = 36;
+            int xPos = 14;
+            int swatchSize = 10;
+            Font legendFont = new Font("Monospaced", Font.PLAIN, 10);
+            g.setFont(legendFont);
+            FontMetrics fm = g.getFontMetrics();
+
+            for (ColorLegendEntry entry : legend) {
+                // Gray border for visibility (especially for black swatches)
+                g.setColor(new Color(80, 80, 80));
+                g.drawRect(xPos - 1, legendY - swatchSize, swatchSize + 1, swatchSize + 1);
+                // Filled color swatch
+                g.setColor(entry.color);
+                g.fillRect(xPos, legendY - swatchSize + 1, swatchSize, swatchSize);
+                // Label text
+                g.setColor(Color.WHITE);
+                g.drawString(entry.label, xPos + swatchSize + 4, legendY);
+                xPos += swatchSize + 4 + fm.stringWidth(entry.label) + 16;
+            }
+        }
 
         g.setFont(new Font("Monospaced", Font.PLAIN, 10));
         g.setColor(new Color(100, 100, 100));
@@ -194,7 +241,7 @@ public class LiquiMapGenerator {
     }
 
     public static void main(String[] args) throws Exception {
-        new File("visualizations").mkdirs();
+        new File("visualizations/liquimap").mkdirs();
 
         List<BufferedImage> allImages = new ArrayList<>();
         int green = GREEN;
@@ -270,8 +317,13 @@ public class LiquiMapGenerator {
             new Color(100, 160, 255).getRGB()   // Light Blue - schedule=11
         };
         int overlap7 = new Color(200, 180, 50).getRGB(); // Yellow - both running
+        List<ColorLegendEntry> legend7 = new ArrayList<>();
+        legend7.add(new ColorLegendEntry(new Color(180, 50, 50), "Period 7"));
+        legend7.add(new ColorLegendEntry(new Color(100, 160, 255), "Period 11"));
+        legend7.add(new ColorLegendEntry(new Color(200, 180, 50), "Both overlap"));
+        legend7.add(new ColorLegendEntry(Color.BLACK, "Idle"));
         allImages.add(generateMultiColor(jobs7, 24, colors7, overlap7, overlap7, black,
-            "7) Interference: schedule=7,d=1 + schedule=11,d=1 (red+blue=yellow)"));
+            "7) Interference: schedule=7,d=1 + schedule=11,d=1", legend7));
 
         // === 8. Composite: three jobs (OS-like workload) ===
         System.out.println("Generating: OS workload (3 jobs)...");
@@ -295,8 +347,15 @@ public class LiquiMapGenerator {
         };
         int overlap8 = new Color(200, 180, 50).getRGB();     // Yellow - 2 jobs overlap
         int allOverlap8 = new Color(255, 255, 255).getRGB(); // White - all 3 overlap
+        List<ColorLegendEntry> legend8 = new ArrayList<>();
+        legend8.add(new ColorLegendEntry(new Color(50, 150, 80), "Backup (12h)"));
+        legend8.add(new ColorLegendEntry(new Color(180, 100, 50), "Health (5h)"));
+        legend8.add(new ColorLegendEntry(new Color(120, 170, 255), "Report (24h)"));
+        legend8.add(new ColorLegendEntry(new Color(200, 180, 50), "2 overlap"));
+        legend8.add(new ColorLegendEntry(new Color(255, 255, 255), "All 3"));
+        legend8.add(new ColorLegendEntry(Color.BLACK, "Idle"));
         allImages.add(generateMultiColor(jobs8, 24, colors8, overlap8, allOverlap8, black,
-            "8) OS workload: 3 jobs (green=12h, orange=5h, blue=24h)"));
+            "8) OS workload: 3 jobs combined", legend8));
 
         // === 9. Schedule shrinking: starts slow, gets faster ===
         System.out.println("Generating: Schedule shrinking (12->2 over 480 hours)...");
@@ -320,15 +379,15 @@ public class LiquiMapGenerator {
 
         // Save individual images
         for (int i = 0; i < allImages.size(); i++) {
-            String filename = "visualizations/liqui_map_" + (i + 1) + ".png";
+            String filename = "visualizations/liquimap/liqui_map_" + (i + 1) + ".png";
             ImageIO.write(allImages.get(i), "PNG", new File(filename));
             System.out.println("Saved: " + filename);
         }
 
         // Save combined image
         BufferedImage combined = stackImages(allImages, new ArrayList<>());
-        ImageIO.write(combined, "PNG", new File("visualizations/liqui_maps_all.png"));
-        System.out.println("Saved combined: visualizations/liqui_maps_all.png");
+        ImageIO.write(combined, "PNG", new File("visualizations/liquimap/liqui_maps_all.png"));
+        System.out.println("Saved combined: visualizations/liquimap/liqui_maps_all.png");
 
         System.out.println("\nDone! Generated " + allImages.size() + " LiquiMap visualizations.");
     }
