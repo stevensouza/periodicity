@@ -47,27 +47,28 @@ public class LiquidMapGenerator {
         int currentHour;
         double nextStartHour, nextEndHour;
         Periodicity schedule, duration;
-        boolean isRunning, prevRunning;
+        boolean wasRunningLastHour;
 
         StandardJob(Periodicity schedule, Periodicity duration) {
             this.schedule = schedule;
             this.duration = duration;
             nextStartHour = 0;
             nextEndHour = Math.ceil(duration.get(0));
+            wasRunningLastHour = false;
         }
 
-        boolean checkRunning() {
-            prevRunning = isRunning;
-            isRunning = currentHour >= nextStartHour && currentHour < nextEndHour;
-            return isRunning;
+        boolean isInWindow() {
+            return currentHour >= nextStartHour && currentHour < nextEndHour;
         }
 
-        void reschedule() {
-            if (!isRunning && prevRunning) {
+        /** Reschedule first, then report whether this hour is running. */
+        boolean stepAndCheck() {
+            // Detect running->not-running transition from previous hour
+            boolean nowInWindow = isInWindow();
+            if (wasRunningLastHour && !nowInWindow) {
+                // Job just finished — schedule the next run
                 nextStartHour += schedule.get(currentHour);
                 nextEndHour = nextStartHour + Math.ceil(duration.get(currentHour));
-                // Re-check: the new window may include the current hour
-                isRunning = currentHour >= nextStartHour && currentHour < nextEndHour;
             }
             // Advance past any windows we've completely missed
             while (currentHour >= nextEndHour) {
@@ -75,8 +76,11 @@ public class LiquidMapGenerator {
                 nextStartHour += schedule.get(currentHour);
                 nextEndHour = nextStartHour + Math.ceil(duration.get(currentHour));
                 if (nextStartHour <= oldStart) break; // safety valve
-                isRunning = currentHour >= nextStartHour && currentHour < nextEndHour;
             }
+            // Now check if running in the (possibly updated) window
+            boolean running = isInWindow();
+            wasRunningLastHour = running;
+            return running;
         }
     }
 
@@ -90,20 +94,13 @@ public class LiquidMapGenerator {
             int x = hour / numRows;
             int y = hour % numRows;
 
-            for (StandardJob job : jobs) {
-                job.currentHour = hour;
-            }
-
             boolean anyRunning = false;
             for (StandardJob job : jobs) {
-                if (job.checkRunning()) anyRunning = true;
+                job.currentHour = hour;
+                if (job.stepAndCheck()) anyRunning = true;
             }
 
             image.setRGB(x, y, anyRunning ? runColor : noRunColor);
-
-            for (StandardJob job : jobs) {
-                job.reschedule();
-            }
         }
 
         // Scale up the image
