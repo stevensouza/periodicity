@@ -13,7 +13,7 @@ public class LiquidMapGenerator {
 
     static final int DAYS_IN_YEAR = 365;
     static final int HOURS_IN_DAY = 24;
-    static final int BLUE = new Color(34, 52, 130).getRGB();
+    static final int GREEN = new Color(0, 200, 80).getRGB();
     static final int SCALE = 3;
 
     // --- Core classes inlined ---
@@ -150,7 +150,7 @@ public class LiquidMapGenerator {
 
     public static void main(String[] args) throws Exception {
         List<BufferedImage> allImages = new ArrayList<>();
-        int blue = BLUE;
+        int green = GREEN;
         int black = Color.BLACK.getRGB();
 
         // === 1. Simple fixed periods for reference ===
@@ -160,7 +160,7 @@ public class LiquidMapGenerator {
             new Periodicity(new PeriodicityParams(7)),
             new Periodicity(new PeriodicityParams(1))
         ));
-        allImages.add(generate(jobs1, 24, blue, black, "1) Every 7 hours, 1hr duration - diagonal drift"));
+        allImages.add(generate(jobs1, 24, green, black, "1) Every 7 hours, 1hr duration - diagonal drift"));
 
         // === 2. Every 13 hours - steeper diagonal ===
         System.out.println("Generating: Fixed period every 13 hours...");
@@ -169,7 +169,7 @@ public class LiquidMapGenerator {
             new Periodicity(new PeriodicityParams(13)),
             new Periodicity(new PeriodicityParams(1))
         ));
-        allImages.add(generate(jobs2, 24, blue, black, "2) Every 13 hours, 1hr duration - different diagonal"));
+        allImages.add(generate(jobs2, 24, green, black, "2) Every 13 hours, 1hr duration - different diagonal"));
 
         // === 3. WEDGE: Linear periodicity transition ===
         System.out.println("Generating: Wedge pattern (schedule 1->4 over 240 hours)...");
@@ -178,7 +178,7 @@ public class LiquidMapGenerator {
             new Periodicity(new PeriodicityParams(1, 4, 240)),
             new Periodicity(new PeriodicityParams(1))
         ));
-        allImages.add(generate(jobs3, 24, blue, black, "3) WEDGE: schedule=1,4,240 duration=1 - spreading pattern"));
+        allImages.add(generate(jobs3, 24, green, black, "3) WEDGE: schedule=1,4,240 duration=1 - spreading pattern"));
 
         // === 4. WEDGE variant: schedule 2->8 over 480 hours ===
         System.out.println("Generating: Wedge pattern (schedule 2->8 over 480 hours)...");
@@ -187,7 +187,7 @@ public class LiquidMapGenerator {
             new Periodicity(new PeriodicityParams(2, 8, 480)),
             new Periodicity(new PeriodicityParams(1))
         ));
-        allImages.add(generate(jobs4, 24, blue, black, "4) WEDGE: schedule=2,8,480 duration=1 - wider spread"));
+        allImages.add(generate(jobs4, 24, green, black, "4) WEDGE: schedule=2,8,480 duration=1 - wider spread"));
 
         // === 5. Growing duration - job stretches over time ===
         System.out.println("Generating: Growing duration (1->7 hours over 9600 hours)...");
@@ -196,7 +196,7 @@ public class LiquidMapGenerator {
             new Periodicity(new PeriodicityParams(7)),
             new Periodicity(new PeriodicityParams(1, 7, 8760))
         ));
-        allImages.add(generate(jobs5, 24, blue, black, "5) schedule=7 duration=1,7,8760 - job grows over the year"));
+        allImages.add(generate(jobs5, 24, green, black, "5) schedule=7 duration=1,7,8760 - job grows over the year"));
 
         // === 6. The rescheduling scenario: fixed gap after finish + growing duration ===
         System.out.println("Generating: Reschedule 6hrs after finish, growing duration...");
@@ -205,7 +205,7 @@ public class LiquidMapGenerator {
             new Periodicity(new PeriodicityParams(6)),
             new Periodicity(new PeriodicityParams(1, 5, 4380))
         ));
-        allImages.add(generate(jobs6, 24, blue, black, "6) schedule=6 duration=1,5,4380 - reschedule after finish, growing"));
+        allImages.add(generate(jobs6, 24, green, black, "6) schedule=6 duration=1,5,4380 - reschedule after finish, growing"));
 
         // === 7. Composite: two jobs with different periods (interference) ===
         System.out.println("Generating: Two overlapping jobs (period 7 + period 11)...");
