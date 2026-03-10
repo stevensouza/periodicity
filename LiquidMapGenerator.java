@@ -66,6 +66,16 @@ public class LiquidMapGenerator {
             if (!isRunning && prevRunning) {
                 nextStartHour += schedule.get(currentHour);
                 nextEndHour = nextStartHour + Math.ceil(duration.get(currentHour));
+                // Re-check: the new window may include the current hour
+                isRunning = currentHour >= nextStartHour && currentHour < nextEndHour;
+            }
+            // Advance past any windows we've completely missed
+            while (currentHour >= nextEndHour) {
+                double oldStart = nextStartHour;
+                nextStartHour += schedule.get(currentHour);
+                nextEndHour = nextStartHour + Math.ceil(duration.get(currentHour));
+                if (nextStartHour <= oldStart) break; // safety valve
+                isRunning = currentHour >= nextStartHour && currentHour < nextEndHour;
             }
         }
     }
