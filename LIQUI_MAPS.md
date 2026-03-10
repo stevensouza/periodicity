@@ -35,7 +35,7 @@ duration=<start>,<end>,<range>  # Transition: linearly change duration over <ran
 
 ### 1. Diagonal Drift: `schedule=7, duration=1`
 
-![Every 7 hours](visualizations/liqui_map_1.png)
+![Every 7 hours](visualizations/liquimap/liqui_map_1.png)
 
 **What you see:** Parallel diagonal stripes running from upper-left to lower-right.
 
@@ -47,7 +47,7 @@ duration=<start>,<end>,<range>  # Transition: linearly change duration over <ran
 
 ### 2. Different Diagonal: `schedule=13, duration=1`
 
-![Every 13 hours](visualizations/liqui_map_2.png)
+![Every 13 hours](visualizations/liquimap/liqui_map_2.png)
 
 **What you see:** A different diagonal angle than #1, with wider spacing between stripes.
 
@@ -57,7 +57,7 @@ duration=<start>,<end>,<range>  # Transition: linearly change duration over <ran
 
 ### 3. The Wedge: `schedule=1,4,240 duration=1`
 
-![Wedge pattern](visualizations/liqui_map_3.png)
+![Wedge pattern](visualizations/liquimap/liqui_map_3.png)
 
 **What you see:** Repeating fan/wedge shapes. The pattern starts dense (nearly every hour is blue) and progressively spreads out, then resets.
 
@@ -69,7 +69,7 @@ duration=<start>,<end>,<range>  # Transition: linearly change duration over <ran
 
 ### 4. Wider Wedge: `schedule=2,8,480 duration=1`
 
-![Wider wedge](visualizations/liqui_map_4.png)
+![Wider wedge](visualizations/liquimap/liqui_map_4.png)
 
 **What you see:** More dramatic sawtooth/wedge shapes with clear diagonal fan-outs and visible repeating periods.
 
@@ -79,7 +79,7 @@ duration=<start>,<end>,<range>  # Transition: linearly change duration over <ran
 
 ### 5. Growing Duration: `schedule=7, duration=1,7,8760`
 
-![Growing job](visualizations/liqui_map_5.png)
+![Growing job](visualizations/liquimap/liqui_map_5.png)
 
 **What you see:** Diagonal stripes that start thin on the left and gradually widen across the entire year until they fill most of the space on the right.
 
@@ -91,7 +91,7 @@ duration=<start>,<end>,<range>  # Transition: linearly change duration over <ran
 
 ### 6. Reschedule After Finish + Growing Duration: `schedule=6, duration=1,5,4380`
 
-![Flooding pattern](visualizations/liqui_map_6.png)
+![Flooding pattern](visualizations/liquimap/liqui_map_6.png)
 
 **What you see:** Horizontal bands that start thin with gaps, then progressively widen and merge until the blue dominates. The pattern "floods" from left to right.
 
@@ -103,7 +103,7 @@ duration=<start>,<end>,<range>  # Transition: linearly change duration over <ran
 
 ### 7. Interference Pattern: `schedule=7,d=1 + schedule=11,d=1`
 
-![Interference](visualizations/liqui_map_7.png)
+![Interference](visualizations/liquimap/liqui_map_7.png)
 
 **What you see:** Two overlapping diagonal stripe patterns shown in distinct colors (red and blue), with yellow highlights where both jobs run simultaneously, creating a visible moiré-like interference texture.
 
@@ -115,7 +115,7 @@ duration=<start>,<end>,<range>  # Transition: linearly change duration over <ran
 
 ### 8. OS Workload: Three Jobs Combined
 
-![OS workload](visualizations/liqui_map_8.png)
+![OS workload](visualizations/liquimap/liqui_map_8.png)
 
 **What you see:** Dense coverage with a complex repeating texture — each job shown in its own color (green, orange, blue), with yellow where two jobs overlap and white where all three coincide.
 
@@ -130,7 +130,7 @@ The composite pattern creates a realistic simulation of an OS scheduling multipl
 
 ### 9. Reverse Wedge (Accelerating Job): `schedule=12,2,480`
 
-![Reverse wedge](visualizations/liqui_map_9.png)
+![Reverse wedge](visualizations/liquimap/liqui_map_9.png)
 
 **What you see:** Inverted wedge/curtain shapes — the pattern starts sparse and accelerates to dense before resetting.
 
@@ -142,7 +142,7 @@ The composite pattern creates a realistic simulation of an OS scheduling multipl
 
 ### 10. Both Schedule and Duration Changing: `schedule=7,11,240 duration=1,4,480`
 
-![Both changing](visualizations/liqui_map_10.png)
+![Both changing](visualizations/liquimap/liqui_map_10.png)
 
 **What you see:** The most complex pattern — organic-looking zigzag mountain-range shapes with varying density.
 

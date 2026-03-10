@@ -30,7 +30,7 @@ The tangent function converts the product of coordinates into an RGB color integ
 
 ### Raw tangent (no modulo)
 
-![Raw tangent](visualizations/paints_1.png)
+![Raw tangent](visualizations/paints/paints_1.png)
 
 **What you see:** A complex, almost textile-like pattern with nested rectangular/diamond structures radiating from the origin. There are visible symmetries along both axes and diagonals.
 
@@ -40,7 +40,7 @@ The tangent function converts the product of coordinates into an RGB color integ
 
 ### tan(j*i % 10)
 
-![Tangent mod 10](visualizations/paints_2.png)
+![Tangent mod 10](visualizations/paints/paints_2.png)
 
 **What you see:** A regular tiled pattern with visible grid structure. The modulo constrains values to 0-9 before the tangent is applied, creating a repeating tile.
 
@@ -50,7 +50,7 @@ The tangent function converts the product of coordinates into an RGB color integ
 
 ### tan(j*i % 43)
 
-![Tangent mod 43](visualizations/paints_5.png)
+![Tangent mod 43](visualizations/paints/paints_5.png)
 
 **What you see:** A richly textured pattern resembling woven fabric, with larger-scale tiling visible as shifted rectangular blocks.
 
@@ -60,7 +60,7 @@ The tangent function converts the product of coordinates into an RGB color integ
 
 ### tan(j*i % 57)
 
-![Tangent mod 57](visualizations/paints_6.png)
+![Tangent mod 57](visualizations/paints/paints_6.png)
 
 **What you see:** Similar textile texture but with a different tile size and different internal structure. The pattern appears almost like a tweed or herringbone weave.
 
@@ -70,7 +70,7 @@ The tangent function converts the product of coordinates into an RGB color integ
 
 ### tan(j*i % 97)
 
-![Tangent mod 97](visualizations/paints_8.png)
+![Tangent mod 97](visualizations/paints/paints_8.png)
 
 **What you see:** Finer-grained texture with larger tile blocks. The prime modulus 97 creates a clean, large repeat unit.
 
@@ -78,7 +78,7 @@ The tangent function converts the product of coordinates into an RGB color integ
 
 ### tan(j*i % 123)
 
-![Tangent mod 123](visualizations/paints_9.png)
+![Tangent mod 123](visualizations/paints/paints_9.png)
 
 **What you see:** Large-scale tiling with visible rectangular super-blocks and internal fine detail. The 123 = 3 x 41 factorization creates a layered grid structure.
 
@@ -88,7 +88,7 @@ The tangent function converts the product of coordinates into an RGB color integ
 
 ### Formula: `i * j` (raw, as RGB color)
 
-![Raw multiplication](visualizations/paints_10.png)
+![Raw multiplication](visualizations/paints/paints_10.png)
 
 **What you see:** Smooth, sweeping hyperbolic curves radiating from the origin corner, with a blue-green-cyan color gradient. This looks almost like a physics simulation of wave interference.
 
@@ -102,7 +102,7 @@ This binary formula is where things get really interesting. The question is simp
 
 ### mod 3: Almost entirely red
 
-![Mod 3](visualizations/paints_11.png)
+![Mod 3](visualizations/paints/paints_11.png)
 
 **What you see:** Nearly solid red. Almost every pixel satisfies the divisibility condition.
 
@@ -112,7 +112,7 @@ This binary formula is where things get really interesting. The question is simp
 
 ### mod 5
 
-![Mod 5](visualizations/paints_12.png)
+![Mod 5](visualizations/paints/paints_12.png)
 
 **What you see:** A dense red grid on black background. Thin black lines are visible, creating a mesh pattern.
 
@@ -122,7 +122,7 @@ This binary formula is where things get really interesting. The question is simp
 
 ### mod 10
 
-![Mod 10](visualizations/paints_13.png)
+![Mod 10](visualizations/paints/paints_13.png)
 
 **What you see:** A finer grid pattern with both thin lines (from the factor-5 component) and a visible sub-grid texture (from the factor-2 component).
 
@@ -132,7 +132,7 @@ This binary formula is where things get really interesting. The question is simp
 
 ### mod 23
 
-![Mod 23](visualizations/paints_14.png)
+![Mod 23](visualizations/paints/paints_14.png)
 
 **What you see:** A striking grid of black rectangles on red, with clear prime-spaced lines creating a clean, regular lattice.
 
@@ -142,7 +142,7 @@ This binary formula is where things get really interesting. The question is simp
 
 ### mod 25
 
-![Mod 25](visualizations/paints_15.png)
+![Mod 25](visualizations/paints/paints_15.png)
 
 **What you see:** Dense red-on-black mesh with a complex layered grid. Visibly different from mod 23.
 
@@ -152,7 +152,7 @@ This binary formula is where things get really interesting. The question is simp
 
 ### mod 35
 
-![Mod 35](visualizations/paints_16.png)
+![Mod 35](visualizations/paints/paints_16.png)
 
 **What you see:** A beautiful grid-of-grids pattern. Small black rectangles are organized into larger rectangular blocks, creating a clearly hierarchical structure.
 
@@ -164,7 +164,7 @@ This binary formula is where things get really interesting. The question is simp
 
 ### XOR: `(i ^ j) % 64` — Sierpinski-like
 
-![XOR 64](visualizations/paints_18.png)
+![XOR 64](visualizations/paints/paints_18.png)
 
 **What you see:** A colorful, repeating diagonal plaid pattern with self-similar structure.
 
@@ -174,7 +174,7 @@ This binary formula is where things get really interesting. The question is simp
 
 ### XOR: `(i ^ j) % 256` — Fractal Carpet
 
-![XOR 256](visualizations/paints_19.png)
+![XOR 256](visualizations/paints/paints_19.png)
 
 **What you see:** A stunning fractal carpet with nested diamond and triangular structures at multiple scales. Rich, varied colors throughout.
 
@@ -184,7 +184,7 @@ This binary formula is where things get really interesting. The question is simp
 
 ### Polar Spiral: `tan(angle * mod + distance / 10)` — mod=8
 
-![Spiral 8](visualizations/paints_20.png)
+![Spiral 8](visualizations/paints/paints_20.png)
 
 **What you see:** A hypnotic black-and-white spiral pattern radiating from the center — an optical illusion that appears to rotate.
 
@@ -194,7 +194,7 @@ This binary formula is where things get really interesting. The question is simp
 
 ### Polar Spiral: `tan(angle * mod + distance / 10)` — mod=23
 
-![Spiral 23](visualizations/paints_21.png)
+![Spiral 23](visualizations/paints/paints_21.png)
 
 **What you see:** A denser spiral with 23 arms, creating a fine-grained radial pattern that resembles a natural pattern like a sunflower or nautilus shell cross-section.
 
