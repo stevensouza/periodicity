@@ -316,11 +316,11 @@ public class LiquiMapGenerator {
             new Color(180, 50, 50).getRGB(),    // Red - schedule=7
             new Color(100, 160, 255).getRGB()   // Light Blue - schedule=11
         };
-        int overlap7 = new Color(200, 180, 50).getRGB(); // Yellow - both running
+        int overlap7 = new Color(50, 180, 50).getRGB(); // Green - both running
         List<ColorLegendEntry> legend7 = new ArrayList<>();
         legend7.add(new ColorLegendEntry(new Color(180, 50, 50), "Period 7"));
         legend7.add(new ColorLegendEntry(new Color(100, 160, 255), "Period 11"));
-        legend7.add(new ColorLegendEntry(new Color(200, 180, 50), "Both overlap"));
+        legend7.add(new ColorLegendEntry(new Color(50, 180, 50), "Both overlap"));
         legend7.add(new ColorLegendEntry(Color.BLACK, "Idle"));
         allImages.add(generateMultiColor(jobs7, 24, colors7, overlap7, overlap7, black,
             "7) Interference: schedule=7,d=1 + schedule=11,d=1", legend7));
