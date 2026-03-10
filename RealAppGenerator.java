@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Uses the REAL project classes to generate liquid map images for comparison.
+ * Uses the REAL project classes to generate LiquiMap images for comparison.
  */
 public class RealAppGenerator {
 

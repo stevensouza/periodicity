@@ -1,15 +1,15 @@
-# Liquid Maps: Visualizing Periodic Job Scheduling
+# LiquiMaps: Visualizing Periodic Job Scheduling
 
-## What is a Liquid Map?
+## What is a LiquiMap?
 
-A liquid map is a pixel-based visualization that maps **every hour of an entire year** onto a 2D grid:
+A LiquiMap is a pixel-based visualization that maps **every hour of an entire year** onto a 2D grid:
 
 - **Rows (Y-axis):** 24 hours of the day (0-23, top to bottom)
 - **Columns (X-axis):** 365 days of the year (left to right)
 - **Each pixel** = 1 hour. Blue = job running, black = idle.
 - **Total:** 24 x 365 = 8,760 pixels representing a full year at hourly resolution.
 
-The name "liquid maps" comes from how the patterns seem to *flow* across the image when job durations grow or schedules shift over time.
+The name "LiquiMaps" comes from how the patterns seem to *flow* across the image when job durations grow or schedules shift over time.
 
 ## How the Program Works
 
@@ -35,7 +35,7 @@ duration=<start>,<end>,<range>  # Transition: linearly change duration over <ran
 
 ### 1. Diagonal Drift: `schedule=7, duration=1`
 
-![Every 7 hours](liquid_map_1.png)
+![Every 7 hours](visualizations/liqui_map_1.png)
 
 **What you see:** Parallel diagonal stripes running from upper-left to lower-right.
 
@@ -47,7 +47,7 @@ duration=<start>,<end>,<range>  # Transition: linearly change duration over <ran
 
 ### 2. Different Diagonal: `schedule=13, duration=1`
 
-![Every 13 hours](liquid_map_2.png)
+![Every 13 hours](visualizations/liqui_map_2.png)
 
 **What you see:** A different diagonal angle than #1, with wider spacing between stripes.
 
@@ -57,7 +57,7 @@ duration=<start>,<end>,<range>  # Transition: linearly change duration over <ran
 
 ### 3. The Wedge: `schedule=1,4,240 duration=1`
 
-![Wedge pattern](liquid_map_3.png)
+![Wedge pattern](visualizations/liqui_map_3.png)
 
 **What you see:** Repeating fan/wedge shapes. The pattern starts dense (nearly every hour is blue) and progressively spreads out, then resets.
 
@@ -69,7 +69,7 @@ duration=<start>,<end>,<range>  # Transition: linearly change duration over <ran
 
 ### 4. Wider Wedge: `schedule=2,8,480 duration=1`
 
-![Wider wedge](liquid_map_4.png)
+![Wider wedge](visualizations/liqui_map_4.png)
 
 **What you see:** More dramatic sawtooth/wedge shapes with clear diagonal fan-outs and visible repeating periods.
 
@@ -79,7 +79,7 @@ duration=<start>,<end>,<range>  # Transition: linearly change duration over <ran
 
 ### 5. Growing Duration: `schedule=7, duration=1,7,8760`
 
-![Growing job](liquid_map_5.png)
+![Growing job](visualizations/liqui_map_5.png)
 
 **What you see:** Diagonal stripes that start thin on the left and gradually widen across the entire year until they fill most of the space on the right.
 
@@ -91,7 +91,7 @@ duration=<start>,<end>,<range>  # Transition: linearly change duration over <ran
 
 ### 6. Reschedule After Finish + Growing Duration: `schedule=6, duration=1,5,4380`
 
-![Flooding pattern](liquid_map_6.png)
+![Flooding pattern](visualizations/liqui_map_6.png)
 
 **What you see:** Horizontal bands that start thin with gaps, then progressively widen and merge until the blue dominates. The pattern "floods" from left to right.
 
@@ -103,34 +103,34 @@ duration=<start>,<end>,<range>  # Transition: linearly change duration over <ran
 
 ### 7. Interference Pattern: `schedule=7,d=1 + schedule=11,d=1`
 
-![Interference](liquid_map_7.png)
+![Interference](visualizations/liqui_map_7.png)
 
-**What you see:** Two overlapping diagonal stripe patterns creating a denser, moiré-like texture with subtle density variations.
+**What you see:** Two overlapping diagonal stripe patterns shown in distinct colors (red and blue), with yellow highlights where both jobs run simultaneously, creating a visible moiré-like interference texture.
 
 **Why it happens:** Two independent jobs (periods 7 and 11) overlap. Since 7 and 11 are coprime, the combined pattern has a super-period of LCM(7,11) = 77 hours before it repeats exactly. The visual texture shifts as the two stripe patterns move in and out of phase.
 
-**Real-world analogy:** An OS running a backup every 12 hours and a virus scan every 15 hours. The two jobs occasionally collide, creating resource contention windows. The liquid map makes these collision patterns immediately visible.
+**Real-world analogy:** An OS running a backup every 12 hours and a virus scan every 15 hours. The two jobs occasionally collide, creating resource contention windows. The LiquiMap makes these collision patterns immediately visible.
 
 ---
 
 ### 8. OS Workload: Three Jobs Combined
 
-![OS workload](liquid_map_8.png)
+![OS workload](visualizations/liqui_map_8.png)
 
-**What you see:** Dense coverage with a complex repeating texture — almost like a woven fabric.
+**What you see:** Dense coverage with a complex repeating texture — each job shown in its own color (green, orange, blue), with yellow where two jobs overlap and white where all three coincide.
 
 **Setup:** Three concurrent jobs:
-- Every 12 hours, 2-hour duration (backup)
-- Every 5 hours, 1-hour duration (health check)
-- Every 24 hours, 3-hour duration (nightly report)
+- Every 12 hours, 2-hour duration (backup) — green
+- Every 5 hours, 1-hour duration (health check) — orange
+- Every 24 hours, 3-hour duration (nightly report) — blue
 
-The composite pattern creates a realistic simulation of an OS scheduling multiple recurring tasks. The dense green shows that the machine is running *some* job for a large fraction of every day.
+The composite pattern creates a realistic simulation of an OS scheduling multiple recurring tasks. The multi-color rendering shows which jobs are running and when they collide.
 
 ---
 
 ### 9. Reverse Wedge (Accelerating Job): `schedule=12,2,480`
 
-![Reverse wedge](liquid_map_9.png)
+![Reverse wedge](visualizations/liqui_map_9.png)
 
 **What you see:** Inverted wedge/curtain shapes — the pattern starts sparse and accelerates to dense before resetting.
 
@@ -142,7 +142,7 @@ The composite pattern creates a realistic simulation of an OS scheduling multipl
 
 ### 10. Both Schedule and Duration Changing: `schedule=7,11,240 duration=1,4,480`
 
-![Both changing](liquid_map_10.png)
+![Both changing](visualizations/liqui_map_10.png)
 
 **What you see:** The most complex pattern — organic-looking zigzag mountain-range shapes with varying density.
 
@@ -165,8 +165,8 @@ r "schedule=7;duration=1;schedule=11;duration=1"
 
 ### Headless Image Generator
 ```bash
-javac LiquidMapGenerator.java
-java -Djava.awt.headless=true LiquidMapGenerator
+javac LiquiMapGenerator.java
+java -Djava.awt.headless=true LiquiMapGenerator
 ```
 
 ### Script Files
