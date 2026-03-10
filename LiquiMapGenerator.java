@@ -6,10 +6,10 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 /**
- * Standalone headless generator for liquid map visualizations.
+ * Standalone headless generator for LiquiMap visualizations.
  * Replicates the core logic from the periodicity project to generate PNG images.
  */
-public class LiquidMapGenerator {
+public class LiquiMapGenerator {
 
     static final int DAYS_IN_YEAR = 365;
     static final int HOURS_IN_DAY = 24;
@@ -103,25 +103,63 @@ public class LiquidMapGenerator {
             image.setRGB(x, y, anyRunning ? runColor : noRunColor);
         }
 
-        // Scale up the image
+        return addLabelAndScale(image, numCols, numRows, label);
+    }
+
+    static BufferedImage generateMultiColor(List<StandardJob> jobs, int numRows,
+            int[] jobColors, int overlapColor, int allOverlapColor, int noRunColor, String label) {
+        int hoursInYear = DAYS_IN_YEAR * numRows;
+        int numCols = DAYS_IN_YEAR;
+
+        BufferedImage image = new BufferedImage(numCols, numRows, BufferedImage.TYPE_INT_RGB);
+
+        for (int hour = 0; hour < hoursInYear; hour++) {
+            int x = hour / numRows;
+            int y = hour % numRows;
+
+            int runningCount = 0;
+            int lastRunningColor = noRunColor;
+            for (int i = 0; i < jobs.size(); i++) {
+                StandardJob job = jobs.get(i);
+                job.currentHour = hour;
+                if (job.stepAndCheck()) {
+                    runningCount++;
+                    lastRunningColor = jobColors[i];
+                }
+            }
+
+            int pixelColor;
+            if (runningCount == 0) {
+                pixelColor = noRunColor;
+            } else if (runningCount == 1) {
+                pixelColor = lastRunningColor;
+            } else if (runningCount == jobs.size() && allOverlapColor != overlapColor) {
+                pixelColor = allOverlapColor;
+            } else {
+                pixelColor = overlapColor;
+            }
+
+            image.setRGB(x, y, pixelColor);
+        }
+
+        return addLabelAndScale(image, numCols, numRows, label);
+    }
+
+    private static BufferedImage addLabelAndScale(BufferedImage image, int numCols, int numRows, String label) {
         int scaledW = numCols * SCALE;
         int scaledH = numRows * SCALE;
 
-        // Add space for label
         int labelHeight = 30;
         BufferedImage scaled = new BufferedImage(scaledW, scaledH + labelHeight, BufferedImage.TYPE_INT_RGB);
         Graphics2D g = scaled.createGraphics();
         g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
 
-        // Draw scaled image
         g.drawImage(image, 0, labelHeight, scaledW, scaledH + labelHeight, 0, 0, numCols, numRows, null);
 
-        // Draw label
         g.setColor(Color.WHITE);
         g.setFont(new Font("Monospaced", Font.BOLD, 14));
         g.drawString(label, 10, 18);
 
-        // Draw axis labels
         g.setFont(new Font("Monospaced", Font.PLAIN, 10));
         g.setColor(new Color(100, 100, 100));
         g.drawString("Days ->", scaledW / 2 - 20, labelHeight - 3);
@@ -156,6 +194,8 @@ public class LiquidMapGenerator {
     }
 
     public static void main(String[] args) throws Exception {
+        new File("visualizations").mkdirs();
+
         List<BufferedImage> allImages = new ArrayList<>();
         int green = GREEN;
         int black = Color.BLACK.getRGB();
@@ -225,8 +265,13 @@ public class LiquidMapGenerator {
             new Periodicity(new PeriodicityParams(11)),
             new Periodicity(new PeriodicityParams(1))
         ));
-        allImages.add(generate(jobs7, 24, new Color(180, 50, 50).getRGB(), black,
-            "7) Composite: schedule=7,d=1 + schedule=11,d=1 - interference"));
+        int[] colors7 = {
+            new Color(180, 50, 50).getRGB(),    // Red - schedule=7
+            new Color(100, 160, 255).getRGB()   // Light Blue - schedule=11
+        };
+        int overlap7 = new Color(200, 180, 50).getRGB(); // Yellow - both running
+        allImages.add(generateMultiColor(jobs7, 24, colors7, overlap7, overlap7, black,
+            "7) Interference: schedule=7,d=1 + schedule=11,d=1 (red+blue=yellow)"));
 
         // === 8. Composite: three jobs (OS-like workload) ===
         System.out.println("Generating: OS workload (3 jobs)...");
@@ -243,8 +288,15 @@ public class LiquidMapGenerator {
             new Periodicity(new PeriodicityParams(24)),
             new Periodicity(new PeriodicityParams(3))
         ));
-        allImages.add(generate(jobs8, 24, new Color(50, 150, 80).getRGB(), black,
-            "8) OS workload: 3 jobs (every 12h/2h, 5h/1h, 24h/3h)"));
+        int[] colors8 = {
+            new Color(50, 150, 80).getRGB(),    // Green - 12h backup
+            new Color(180, 100, 50).getRGB(),   // Orange - 5h health check
+            new Color(120, 170, 255).getRGB()   // Light Blue - 24h nightly report
+        };
+        int overlap8 = new Color(200, 180, 50).getRGB();     // Yellow - 2 jobs overlap
+        int allOverlap8 = new Color(255, 255, 255).getRGB(); // White - all 3 overlap
+        allImages.add(generateMultiColor(jobs8, 24, colors8, overlap8, allOverlap8, black,
+            "8) OS workload: 3 jobs (green=12h, orange=5h, blue=24h)"));
 
         // === 9. Schedule shrinking: starts slow, gets faster ===
         System.out.println("Generating: Schedule shrinking (12->2 over 480 hours)...");
@@ -268,16 +320,16 @@ public class LiquidMapGenerator {
 
         // Save individual images
         for (int i = 0; i < allImages.size(); i++) {
-            String filename = "liquid_map_" + (i + 1) + ".png";
+            String filename = "visualizations/liqui_map_" + (i + 1) + ".png";
             ImageIO.write(allImages.get(i), "PNG", new File(filename));
             System.out.println("Saved: " + filename);
         }
 
         // Save combined image
         BufferedImage combined = stackImages(allImages, new ArrayList<>());
-        ImageIO.write(combined, "PNG", new File("liquid_maps_all.png"));
-        System.out.println("Saved combined: liquid_maps_all.png");
+        ImageIO.write(combined, "PNG", new File("visualizations/liqui_maps_all.png"));
+        System.out.println("Saved combined: visualizations/liqui_maps_all.png");
 
-        System.out.println("\nDone! Generated " + allImages.size() + " liquid map visualizations.");
+        System.out.println("\nDone! Generated " + allImages.size() + " LiquiMap visualizations.");
     }
 }
